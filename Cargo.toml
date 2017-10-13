@@ -1,6 +1,8 @@
 [package]
+authors = ["too-r <william@huddie.net>"]
 name = "sudobot-rs"
 version = "0.1.0"
-authors = ["too-r <william@huddie.net>"]
-
 [dependencies]
+serde_derive = "*"
+serde_json = "*"
+serenity = "*"
