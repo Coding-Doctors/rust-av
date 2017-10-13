@@ -18,6 +18,7 @@ use spin::Mutex;
 struct Config {
     token: String,
     user_roles: Vec<String>,
+    log_channel: String,
 }
 
 static CONFIG: Mutex<Config> = Mutex::new(Config);
@@ -41,9 +42,22 @@ impl EventHandler for Handler {
 
                 for value in channels.values() {
                     let mut name = value.read().unwrap().name;
+                    
+                    let log_chan = CONFIG.lock().log_channel
 
-                    match name.as_str() {
-                        s
+                    match name {
+                        log_chan => {
+                            let id = value.read().unwrap().id;
+                            
+                            //Retrieve an array of the bans this guild has.
+                            let bans = guild.bans().unwrap();
+
+                            for ban in bans {
+                                if ban.user == user {
+                                    id.say("User {} was banned for reason {}", ban.user, ban.reason.unwrap());
+                                }
+                            }
+                        }
                     }
                 }
             }
