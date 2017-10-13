@@ -37,29 +37,14 @@ impl EventHandler for Handler {
             //Grab a Guild object to play with.
             let guild = g.read().unwrap();
 
-            let log_channel = {
-                let channels = guild.channels;
+            let log_channel = CONFIG.lock().log_channel;
 
-                for value in channels.values() {
-                    let mut name = value.read().unwrap().name;
-                    
-                    let log_chan = CONFIG.lock().log_channel
+            let channels = guild.channels;
 
-                    match name {
-                        log_chan => {
-                            let id = value.read().unwrap().id;
-                            
-                            //Retrieve an array of the bans this guild has.
-                            let bans = guild.bans().unwrap();
+            for value in channels.values() {
+                let mut name = value.read().unwrap().name;
 
-                            for ban in bans {
-                                if ban.user == user {
-                                    id.say("User {} was banned for reason {}", ban.user, ban.reason.unwrap());
-                                }
-                            }
-                        }
-                    }
-                }
+                l
             }
         }
     }
