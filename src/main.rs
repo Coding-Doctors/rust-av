@@ -62,7 +62,29 @@ impl EventHandler for Handler {
 
                 match name {
                     log_channel => {
-                        
+                        let mut id = &value.read().unwrap().id;
+
+                        let mut bans = guild.bans().unwrap();
+
+                        for ban in bans {
+                            //Check if the current element of the iterator matches, and if it does
+                            //we can access more info about the ban.
+                            if ban.user == user {
+                                match ban.reason {
+                                    Some(r) = {
+                                        let user_discrim = format!("{}{}", user.name, user.discriminator);
+
+                                        if let Err(err) = id.say("User {} was banned for reason {}", user_discrim, r) {
+                                            println!("Error sending message to channel {} for reason {}", id, err);
+                                        }
+                                    }
+
+                                    None {
+                                        
+                                    }
+                                }
+                            }
+                        }
                     },
 
                     _ => {
