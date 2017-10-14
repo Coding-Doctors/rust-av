@@ -4,6 +4,8 @@ extern crate serde_derive;
 extern crate serde;
 extern crate toml;
 extern crate spin;
+#[macro_use]
+extern crate lazy_static;
 
 use std::path::Path;
 use std::fs::File;
@@ -22,17 +24,19 @@ struct Config {
     log_channel: String,
 }
 
-static CONFIG: Mutex<Config> = {
-    let mut path = "$HOME/.config/sudobot/config.toml";
-    let mut f = File::open(path).unwrap();
+lazy_static! {
+    static ref CONFIG: Mutex<Config> = {
+        let mut path = "$HOME/.config/sudobot/config.toml";
+        let mut f = File::open(path).unwrap();
 
-    let mut buffer = String::new();
-    f.read_to_string(&mut buffer).unwrap();
+        let mut buffer = String::new();
+        f.read_to_string(&mut buffer).unwrap();
 
-    let cfg: Config = toml::from_str(&buffer).unwrap();
+        let cfg: Config = toml::from_str(&buffer).unwrap();
 
-    Mutex::new(cfg)
-};
+        Mutex::new(cfg)
+    };
+}
 
 
 struct Handler;
