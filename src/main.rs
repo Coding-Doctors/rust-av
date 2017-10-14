@@ -3,6 +3,7 @@ extern crate serenity;
 extern crate serde_derive;
 extern crate serde;
 extern crate toml;
+extern crate spin;
 
 use std::path::Path;
 use std::fs::File;
@@ -35,16 +36,42 @@ impl EventHandler for Handler {
 
         if let Some(g) = cache.guild(guild_id) {
             //Grab a Guild object to play with.
-            let guild = g.read().unwrap();
+            let mut guild = g.read().unwrap();
 
-            let log_channel = CONFIG.lock().log_channel;
+            let log_channel = format!("#{}", CONFIG.lock().log_channel);
 
             let channels = guild.channels;
 
             for value in channels.values() {
                 let mut name = value.read().unwrap().name;
 
-                l
+                match name {
+                    log_channel => {
+                        
+                    },
+
+                    _ => {
+                        //Tell the server owner that we couldn't find the correct log channel.
+                        let mut owner_id = guild.owner_id;
+
+                        for member in guild.members.values() {
+                            //Get a user object to use.
+                            if member.user.read().unwrap().id == owner_id {
+                                let user = member.user.read().unwrap();
+                                
+                                let info_string = format!("This server does not have a log channel as configured, please make sure that the channel exists and this bot has permission to access it");
+
+                                //Try to dm the server owner that this didn't work.
+                                match user.dm(|m| m.content(&info_string)) {
+                                    Ok(_) => {}
+                                    Err(e) => {
+                                        println!("Error sending log info: {}", e);
+                                    }
+                                }
+                            }
+                        }
+                    },
+                }
             }
         }
     }
