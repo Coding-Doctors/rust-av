@@ -71,21 +71,23 @@ impl EventHandler for Handler {
                             //we can access more info about the ban.
                             if ban.user == user {
                                 match ban.reason {
-                                    Some(r) = {
+                                    Some(r) => {
                                         let user_discrim = format!("{}{}", user.name, user.discriminator);
+                                        let message = format!("User {} was banned for reason {}", user_discrim, r);
 
-                                        if let Err(err) = id.say("User {} was banned for reason {}", user_discrim, r) {
+                                        if let Err(err) = id.say(&message) {
                                             println!("Error sending message to channel {} for reason {}", id, err);
                                         }
-                                    }
+                                    },
 
-                                    None {
+                                    None => {
                                         let user_discrim = format!("{}{}", user.name, user.discriminator);
+                                        let message = format!("User {} was banned. No reason given", user_discrim);
 
-                                        if let Err(err) = id.say("User {} was banned. No reason given.", user_discrim) {
+                                        if let Err(err) = id.say(&message) {
                                             println!("Error sending message to channel {} for reason {}", id, err);
                                         }
-                                    }
+                                    },
                                 }
                             }
                         }
