@@ -45,7 +45,7 @@ lazy_static! {
 fn main() {
     let token = &CONFIG.lock().token;
 
-    let mut client = Client::new(&token, Handler);
+    let mut client = Client::new(token, Handler);
 
     if let Err(e) = client.start() {
         println!("Error starting client {}", e);
