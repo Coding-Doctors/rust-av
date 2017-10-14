@@ -22,7 +22,18 @@ struct Config {
     log_channel: String,
 }
 
-static CONFIG: Mutex<Config> = Mutex::new(Config);
+static CONFIG: Mutex<Config> = {
+    let mut path = "$HOME/.config/sudobot/config.toml";
+    let mut f = File::open(path).unwrap();
+
+    let mut buffer = String::new();
+    f.read_to_string(&mut buffer).unwrap();
+
+    let cfg: Config = toml::from_str(&buffer).unwrap();
+
+    Mutex::new(cfg)
+};
+
 
 struct Handler;
 
@@ -40,10 +51,10 @@ impl EventHandler for Handler {
 
             let log_channel = format!("#{}", CONFIG.lock().log_channel);
 
-            let channels = guild.channels;
+            let channels = &guild.channels;
 
             for value in channels.values() {
-                let mut name = value.read().unwrap().name;
+                let mut name = &value.read().unwrap().name;
 
                 match name {
                     log_channel => {
