@@ -80,7 +80,11 @@ impl EventHandler for Handler {
                                     }
 
                                     None {
-                                        
+                                        let user_discrim = format!("{}{}", user.name, user.discriminator);
+
+                                        if let Err(err) = id.say("User {} was banned. No reason given.", user_discrim) {
+                                            println!("Error sending message to channel {} for reason {}", id, err);
+                                        }
                                     }
                                 }
                             }
