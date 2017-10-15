@@ -6,6 +6,9 @@ extern crate serde_derive;
 extern crate serenity;
 extern crate spin;
 extern crate toml;
+extern crate env_logger;
+#[macro_use]
+extern crate log;
 
 mod handlers;
 
@@ -19,7 +22,6 @@ use std::env;
 use std::collections::HashMap;
 use spin::Mutex;
 use handlers::Handler;
-
 
 #[derive(Deserialize)]
 struct Config {
@@ -43,11 +45,18 @@ lazy_static! {
 }
 
 fn main() {
+    match env_logger::init() {
+        Ok(_) => {}
+        Err(e) => {
+            println!("Failed to initialize env_logger. Reason: {}", e.cause());
+        },
+    }
+
     let token = &CONFIG.lock().token;
 
     let mut client = Client::new(token, Handler);
 
     if let Err(e) = client.start() {
-        println!("Error starting client {}", e);
+        error!("Client error: {:?}", e);
     }
 }
