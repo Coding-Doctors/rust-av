@@ -7,7 +7,7 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User) {
     //This is safe because we are the only ones who hold the lock.
     let cache = CACHE.read().unwrap();
 
-    let guild = match cache.guild(guild_id) {
+    let guild = match cache.guild(guild_id).unwrap().read() {
         Some(g) => g,
         None => None
     };
@@ -54,7 +54,7 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User) {
     };
 
     if reason.is_none() {
-        let log_msg = format!("User {} was banned. No reason given.");
+        let log_msg = format!("User {} was banned. No reason given.", user_discrim);
         if let Err(e) = channel.id.say(&log_msg) {
             error!("Error sending log message: {}", e);
         }
