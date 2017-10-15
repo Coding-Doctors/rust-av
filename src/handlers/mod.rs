@@ -4,7 +4,6 @@ use serenity::client::CACHE;
 use CONFIG;
 
 mod moderation;
-use moderation::*;
 
 pub struct Handler;
 
