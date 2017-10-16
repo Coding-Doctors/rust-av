@@ -1,10 +1,10 @@
 use serenity::prelude::*;
 use serenity::model::*;
 use serenity::client::CACHE;
-use super::Config;
+use crate::Config;
 use std::error::Error;
 
-pub fn ban_handler(_: Context, guild_id: GuildId, user: User) {
+pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Result<String, _> {
     //This is safe because we are the only ones who hold the lock.
     let cache = CACHE.read().unwrap();
 
@@ -17,26 +17,16 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User) {
 
     //Safe.
     guild = guild.read().unwrap();
-
-    let channel = {
-        //Assume no other threads have accessed this lock and hence there is no risk of it being
-        //poisoned. This is a safe assumption because our program only uses one thread.
-        for chan in guild.channels.values().read().unwrap() {
-            if chan.name == log_chan {
-                chan
-            } else {
-                info!("No log channel as configured found on this server");
-            }
-        }
-    };
-
+    
+    //The ban we want to log.
     let ban_info = {
-        for ban in guild.bans() {
+        let iterator = guild.bans().unwrap().iter_mut();
+
+        for ban in iterator {
             if ban.user == user {
                 ban
             } else {
-                let user_discrim = format!("{}{}", user.name, user.discriminator.to_string());
-                info!("No ban found for user {} on server {}({})", user_discrim, guild.name, guild.id);
+                info!("User {} is not banned from server", user.name, guild.name);
             }
         }
     };
@@ -47,16 +37,14 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User) {
 
     let reason = ban_info.reason;
 
+    let mut log_msg: String;
+    
+    //If no reason.
     if reason.is_none() {
-        let log_msg = format!("User {} was banned. No reason given.", user_discrim);
-        if let Err(e) = channel.id.say(&log_msg) {
-            error!("Error sending log message: {}", e);
-        }
+        log_msg = format!("User {} was banned.", user_discrim);
+    } else {
+        log_msg = format!("User {} was banned for reason {}", user.name, reason.unwrap());
     }
 
-    let log_msg = format!("User {} was banned for reason: {}", user_discrim, reason.unwrap());
-
-    if let Err(e) = channel.id.say(&log_msg) {
-        error!("Error sending log message: {}", e);
-    }
+    log_msg
 }
