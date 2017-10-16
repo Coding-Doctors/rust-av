@@ -2,24 +2,21 @@ use serenity::prelude::*;
 use serenity::model::*;
 use serenity::client::CACHE;
 use super::Config;
+use std::error::Error;
 
 pub fn ban_handler(_: Context, guild_id: GuildId, user: User) {
     //This is safe because we are the only ones who hold the lock.
     let cache = CACHE.read().unwrap();
 
-    let guild = match cache.guild(guild_id).unwrap().read() {
-        Some(g) => g,
-        None => None
-    };
+    let mut guild = cache.guild();
     
-    //If no guild was found...
+    //No guild found for the specified guild id.
     if guild.is_none() {
-        error!("No guild found for GuildId {}", guild_id);
+        Err(&format!("No guild found for this guild id."))
     }
 
-    //Safe to assume guild holds a Guild object now because otherwise this code would be
-    //unreachable.
-    let log_chan = cfg.log_channel;
+    //Safe.
+    guild = guild.read().unwrap();
 
     let channel = {
         //Assume no other threads have accessed this lock and hence there is no risk of it being
@@ -48,10 +45,7 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User) {
     //e.g: toor#5207
     let user_discrim = format!("{}{}", user.name, user.discriminator.to_string());
 
-    let reason = match ban_info.reason {
-        Some(r) => r,
-        None => None
-    };
+    let reason = ban_info.reason;
 
     if reason.is_none() {
         let log_msg = format!("User {} was banned. No reason given.", user_discrim);
@@ -60,7 +54,7 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User) {
         }
     }
 
-    let log_msg = format!("User {} was banned for reason: {}", user_discrim, reason);
+    let log_msg = format!("User {} was banned for reason: {}", user_discrim, reason.unwrap());
 
     if let Err(e) = channel.id.say(&log_msg) {
         error!("Error sending log message: {}", e);
