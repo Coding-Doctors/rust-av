@@ -18,27 +18,22 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
     //Safe.
     guild = guild.read().unwrap();
 
+    let log_msg: String;
     //The ban we want to log.
-    let ban_info = {
-        let iterator = guild.bans().unwrap().iter_mut();
- 
-        for ban in iterator {
-            if ban.user == user {
-                ban
+    match guild.bans().unwrap().iter().find(|b| b.user.id == user.id) {
+        Some(b) => {
+            let reason = &b.reason;
+            //If no reason.
+            if reason.is_none() {
+                log_msg = format!("User {} was banned.", user.mention());
             } else {
-                info!("User {} is not banned from server", user.name, guild.name);
-    };
-    
-    let reason = ban_info.reason;
-
-    let mut log_msg: String;
-    
-    //If no reason.
-    if reason.is_none() {
-        log_msg = format!("User {} was banned.", user.mention());
-    } else {
-        log_msg = format!("User {} was banned for reason {}", user.name, reason.unwrap());
-     }
-
-    log_msg
+                log_msg = format!("User {} was banned for reason {}", user.name, reason.clone().unwrap());
+            }
+            log_msg
+            },
+        None => {
+            log_msg = format!("User {} is not banned from server", user.name);
+            log_msg
+        }
+    }
 }
