@@ -1,18 +1,18 @@
 use serenity::prelude::*;
 use serenity::model::*;
 use serenity::client::CACHE;
-use crate::Config;
+use Config;
 use std::error::Error;
 
-pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Result<String, _> {
+pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Result<String, String> {
     //This is safe because we are the only ones who hold the lock.
     let cache = CACHE.read().unwrap();
 
-    let mut guild = cache.guild();
+    let mut guild = cache.guild(guild_id);
     
     //No guild found for the specified guild id.
     if guild.is_none() {
-        Err(&format!("No guild found for this guild id."))
+        Err(format!("No guild found for this guild id."))
     }
 
     //Safe.
@@ -26,13 +26,13 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
             if ban.user == user {
                 ban
             } else {
-                info!("User {} is not banned from server", user.name, guild.name);
+                info!("User {} is not banned from server {}", user.name, guild.name);
             }
         }
     };
     
     //Format the info about the banned user as a unique combination of name and discriminator.
-    //e.g: toor#5207
+    //e.g: toor#5207. This will be unique at the time the ban is retrieved.
     let user_discrim = format!("{}{}", user.name, user.discriminator.to_string());
 
     let reason = ban_info.reason;
@@ -46,5 +46,5 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
         log_msg = format!("User {} was banned for reason {}", user.name, reason.unwrap());
     }
 
-    log_msg
+    Ok(log_msg)
 }
