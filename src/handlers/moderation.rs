@@ -4,7 +4,7 @@ use serenity::client::CACHE;
 use Config;
 use std::error::Error;
 
-pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Result<String, _> {
+pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Result<String, String> {
     //This is safe because we are the only ones who hold the lock.
     let cache = CACHE.read().unwrap();
 
@@ -12,7 +12,7 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
     
     //No guild found for the specified guild id.
     if guild.is_none() {
-        Err(&format!("No guild found for this guild id."))
+        Err(format!("No guild found for this guild id."))
     }
 
     //Safe.
