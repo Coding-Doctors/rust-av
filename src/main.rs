@@ -9,6 +9,7 @@ extern crate toml;
 extern crate env_logger;
 #[macro_use]
 extern crate log;
+extern crate derive_error;
 
 mod handlers;
 mod error;
