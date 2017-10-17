@@ -23,7 +23,7 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
             if reason.is_none() {
                 log_msg = format!("User {} was banned.", user.mention());
             } else {
-                log_msg = format!("User {} was banned for reason {}", user.name, reason.clone().unwrap());
+                log_msg = format!("User {} was banned for reason {}", user.mention(), reason.clone().unwrap());
             }
             Ok(log_msg)
         },
