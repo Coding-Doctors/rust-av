@@ -8,7 +8,7 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
     //This is safe because we are the only ones who hold the lock.
     let cache = CACHE.read().unwrap();
 
-    let mut guild = cache.guild();
+    let mut guild = cache.guild(guild_id);
     
     //No guild found for the specified guild id.
     if guild.is_none() {
