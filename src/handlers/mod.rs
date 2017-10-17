@@ -1,7 +1,7 @@
 use serenity::prelude::*;
 use serenity::model::*;
 use serenity::client::CACHE;
-use CONFIG;
+pub use super::Config;
 
 mod moderation;
 

@@ -24,7 +24,7 @@ use spin::Mutex;
 use handlers::Handler;
 
 #[derive(Deserialize)]
-struct Config {
+pub struct Config {
     token: String,
     user_roles: Vec<String>,
     log_channel: String,
