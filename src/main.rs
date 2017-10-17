@@ -11,6 +11,7 @@ extern crate env_logger;
 extern crate log;
 
 mod handlers;
+mod error;
 
 use std::path::Path;
 use std::fs::File;
