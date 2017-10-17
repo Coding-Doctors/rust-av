@@ -25,6 +25,7 @@ use std::env;
 use std::error::Error;
 use spin::Mutex;
 use handlers::Handler;
+use error;
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -32,16 +33,16 @@ pub struct Config {
     log_channel: u64,
 }
 
-pub fn get_config() -> Config {
-    let home_dir = env::home_dir().unwrap();
+pub fn get_config() -> Result<Config, error::Error> {
+    let home_dir = env::home_dir()?;
     let path = home_dir.join(".config").join("sudobot").join("config.toml");
 
-    let mut f = File::open(path).unwrap();
+    let mut f = File::open(path)?;
     let mut buf = String::new();
 
-    f.read_to_string(&mut buf).unwrap();
+    f.read_to_string(&mut buf)?;
 
-    toml::from_str(&buf).unwrap()
+    toml::from_str(&buf)
 }
 
 fn main() {
@@ -52,9 +53,15 @@ fn main() {
         },
     }
 
-    let cfg = get_config();
+    let cfg = match get_config() {
+        Ok(c) => c,
+        Err(e) => {
+            //Io error.
+            error!("Error retrieving config from file: {}", e.description());
+        },
+    };
         
-    let token = cfg.token.clone();
+    let token = cfg.clone().token;
     
     let handler = Handler {
         cfg: cfg,
