@@ -1,7 +1,7 @@
 use serenity::prelude::*;
 use serenity::model::*;
 use serenity::client::CACHE;
-use crate::Config;
+use Config;
 use std::error::Error;
 
 pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Result<String, _> {
