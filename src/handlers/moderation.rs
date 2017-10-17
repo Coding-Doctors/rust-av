@@ -31,17 +31,13 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
         }
     };
     
-    //Format the info about the banned user as a unique combination of name and discriminator.
-    //e.g: toor#5207
-    let user_discrim = format!("{}{}", user.name, user.discriminator.to_string());
-
     let reason = ban_info.reason;
 
     let mut log_msg: String;
     
     //If no reason.
     if reason.is_none() {
-        log_msg = format!("User {} was banned.", user_discrim);
+        log_msg = format!("User {} was banned.", user.mention());
     } else {
         log_msg = format!("User {} was banned for reason {}", user.name, reason.unwrap());
     }
