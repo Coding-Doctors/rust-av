@@ -19,6 +19,7 @@ use serenity::prelude::*;
 use serenity::model::*;
 use serenity::client::CACHE;
 use std::env;
+use std::error::Error;
 use std::collections::HashMap;
 use spin::Mutex;
 use handlers::Handler;
@@ -48,7 +49,7 @@ fn main() {
     match env_logger::init() {
         Ok(_) => {}
         Err(e) => {
-            println!("Failed to initialize env_logger. Reason: {}", e.cause());
+            println!("Failed to initialize env_logger. Reason: {}", e.cause().unwrap());
         },
     }
 
