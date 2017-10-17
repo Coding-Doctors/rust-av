@@ -20,7 +20,6 @@ use serenity::model::*;
 use serenity::client::CACHE;
 use std::env;
 use std::error::Error;
-use std::collections::HashMap;
 use spin::Mutex;
 use handlers::Handler;
 
@@ -28,21 +27,19 @@ use handlers::Handler;
 pub struct Config {
     token: String,
     user_roles: Vec<String>,
-    log_channel: String,
+    log_channel: u64,
 }
 
-lazy_static! {
-    static ref CONFIG: Mutex<Config> = {
-        let path = "$HOME/.config/sudobot/config.toml";
-        let mut f = File::open(path).unwrap();
+pub fn get_config() -> Config {
+    let home_dir = env::home_dir().unwrap();
+    let path = home_dir.join(".config").join("sudobot").join("config.toml");
 
-        let mut buffer = String::new();
-        f.read_to_string(&mut buffer).unwrap();
+    let mut f = File::open(path).unwrap();
+    let mut buf = String::new();
 
-        let cfg: Config = toml::from_str(&buffer).unwrap();
+    f.read_to_string(&mut buf).unwrap();
 
-        Mutex::new(cfg)
-    };
+    toml::from_str(&buf).unwrap()
 }
 
 fn main() {
@@ -53,9 +50,15 @@ fn main() {
         },
     }
 
-    let token = &CONFIG.lock().token;
+    let cfg = get_config();
+        
+    let token = cfg.token.clone();
+    
+    let handler = Handler {
+        cfg: cfg,
+    };
 
-    let mut client = Client::new(token, Handler);
+    let mut client = Client::new(&token, handler);
 
     if let Err(e) = client.start() {
         error!("Client error: {:?}", e);
