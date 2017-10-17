@@ -27,7 +27,6 @@ use handlers::Handler;
 #[derive(Deserialize)]
 pub struct Config {
     token: String,
-    user_roles: Vec<String>,
     log_channel: u64,
 }
 
