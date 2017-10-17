@@ -19,8 +19,13 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
     guild = guild.read().unwrap();
 
     let log_msg: String;
+    let guild_bans = match guild.bans() {
+        Ok(b) => b,
+        Err(e) => Err(&format!("Couldn't pull bans from discord: {}", e))
+    };
+
     //The ban we want to log.
-    match guild.bans().unwrap().iter().find(|b| b.user.id == user.id) {
+    match guild_bans.iter().find(|b| b.user.id == user.id) {
         Some(b) => {
             let reason = &b.reason;
             //If no reason.
