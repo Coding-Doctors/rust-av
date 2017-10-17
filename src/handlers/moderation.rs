@@ -16,7 +16,7 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
     }
 
     //Safe.
-    guild = guild.read().unwrap();
+    guild = guild.unwrap().read();
 
     let log_msg: String;
     let guild_bans = match guild.bans() {
