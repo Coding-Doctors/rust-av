@@ -26,7 +26,6 @@ use std::error::Error;
 use spin::Mutex;
 use handlers::Handler;
 
-
 #[derive(Deserialize)]
 pub struct Config {
     token: String,
@@ -55,7 +54,7 @@ fn main() {
 
     let cfg = get_config();
         
-    let token = cfg.token;
+    let token = cfg.token.clone();
     
     let handler = Handler {
         cfg: cfg,

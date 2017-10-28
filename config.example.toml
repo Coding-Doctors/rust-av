@@ -1,4 +1,2 @@
-[config]
 token = "your token here"
-user_roles = ["a role", "another role"]
-log_channel = "The channel to log moderation events to"
+log_channel = 1235
