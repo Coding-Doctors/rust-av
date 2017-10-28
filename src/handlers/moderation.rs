@@ -4,7 +4,7 @@ use serenity::client::CACHE;
 use Config;
 use std::error::Error;
 
-pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Result<String, String> {
+pub fn ban_handler(guild_id: GuildId, user: User, cfg: &Config) -> Result<String, String> {
     //This is safe because we are the only ones who hold the lock.
     let cache = CACHE.read().unwrap();
 
@@ -18,6 +18,7 @@ pub fn ban_handler(_: Context, guild_id: GuildId, user: User, cfg: Config) -> Re
     //The ban we want to log.
     match guild_bans.iter().find(|b| b.user.id == user.id) {
         Some(b) => {
+            println!("Found a ban.");
             let reason = &b.reason;
             //If no reason.
             if reason.is_none() {
