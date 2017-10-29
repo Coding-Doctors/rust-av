@@ -3,6 +3,7 @@ extern crate lazy_static;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
 extern crate serenity;
 extern crate spin;
 extern crate toml;
@@ -22,6 +23,7 @@ use std::io::prelude::*;
 use serenity::prelude::*;
 use serenity::model::*;
 use serenity::client::CACHE;
+use serenity::framework::StandardFramework;
 use std::env;
 use std::error::Error;
 use spin::Mutex;
@@ -62,6 +64,21 @@ fn main() {
     };
 
     let mut client = Client::new(&token, handler);
+
+    client.with_framework(
+        StandardFramework::new()
+        .configure(|c| c
+            .prefix("sudo")
+            .on_mention(true))
+        .before(|_ctx, msg, command_name| {
+            info!("Got command {} by user {}", command_name, msg.author.name);
+            true
+        })
+        .group("Moderation", |g| g
+            .command("ban", |c| c
+                .exec(commands::ban)
+                .desc("Bans a user")))
+        );
 
     if let Err(e) = client.start() {
         error!("Client error: {:?}", e);
