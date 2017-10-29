@@ -18,13 +18,12 @@ pub fn ban_handler(guild_id: GuildId, user: User, cfg: &Config) -> Result<String
     //The ban we want to log.
     match guild_bans.iter().find(|b| b.user.id == user.id) {
         Some(b) => {
-            println!("Found a ban.");
             let reason = &b.reason;
             //If no reason.
             if reason.is_none() {
                 log_msg = format!("User {} was banned.", user.mention());
             } else {
-                log_msg = format!("User {} was banned for reason {}", user.mention(), reason.clone().unwrap());
+                log_msg = format!("User {} was banned for reason: {}", user.mention(), reason.clone().unwrap());
             }
             Ok(log_msg)
         },
