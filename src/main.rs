@@ -14,6 +14,7 @@ extern crate derive_error;
 
 mod handlers;
 mod error;
+mod commands;
 
 use std::path::Path;
 use std::fs::File;
