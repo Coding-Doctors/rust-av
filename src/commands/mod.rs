@@ -10,8 +10,13 @@ command!(ban(_ctx, msg, args) {
 
     let id = msg.mentions[0].id;
 
-    //Delete messages in the past day.
-    if let Err(why) = guild.ban(id, 1) {
+    //Reason must come directly after the user ban mention (2nd arg).
+    let reason = args.get(1).unwrap();
+
+    let ban_options: (u8, &str) = (1, &reason);
+
+    //Delete messages in the past day. The BanOptions is a tuple implementation for (u8, str).
+    if let Err(why) = guild.ban(id, ban_options) {
         error!("Error banning user: {}", why);
     }
 });
