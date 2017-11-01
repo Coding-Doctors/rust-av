@@ -1,5 +1,3 @@
-#[macro_use]
-extern crate lazy_static;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -17,16 +15,13 @@ mod handlers;
 mod error;
 mod commands;
 
-use std::path::Path;
 use std::fs::File;
 use std::io::prelude::*;
-use serenity::prelude::*;
-use serenity::model::*;
-use serenity::client::CACHE;
-use serenity::framework::StandardFramework;
 use std::env;
 use std::error::Error;
-use spin::Mutex;
+use serenity::prelude::*;
+use serenity::model::*;
+use serenity::framework::StandardFramework;
 use handlers::Handler;
 
 #[derive(Deserialize)]
