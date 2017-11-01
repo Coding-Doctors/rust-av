@@ -7,11 +7,13 @@ command!(ban(_ctx, msg, args) {
 
     let guild = guild.unwrap();
     let guild = guild.read().unwrap();
-
+    
+    //First mention in the message.
     let id = msg.mentions[0].id;
     
     let mut reason: String;
-
+    
+    //If there were arguments provided and we can split them up.
     if let Some((_, remainder)) = args.split_first() {
         let joined = remainder.join(" ");
         reason = joined;
