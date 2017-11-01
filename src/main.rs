@@ -32,6 +32,8 @@ use handlers::Handler;
 #[derive(Deserialize)]
 pub struct Config {
     token: String,
+    mod_id: u64,
+    admin_id: u64
     log_channel: u64,
 }
 
