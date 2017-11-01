@@ -61,7 +61,7 @@ command!(kick(_ctx, msg, args) {
     match guild.kick(id) {
         Ok(()) => {
             if reason.len() == 0 {
-                log_msg = format!("User {} was banned. No reason.", id.mention());
+                log_msg = format!("User {} was kicked. No reason.", id.mention());
             } else {
                 log_msg = format!("User {} was kicked for reason {}", id.mention(), reason);
             }
