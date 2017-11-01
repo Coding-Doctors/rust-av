@@ -16,4 +16,9 @@ Before running, copy the `config.example.toml` to `~/.config/sudobot/config.tonl
 - Turn on developer mode in Discord (Settings -> Appearance -> Advanced -> Developer Mode).
 - Right click on the desired channel and click on `Copy ID` at the bottom of the context menu that appears.
 
+You can then run it:
+```bash
+cd $HOME/cloned_repo
+cargo run
+```
 
