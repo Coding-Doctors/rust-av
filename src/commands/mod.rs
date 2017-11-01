@@ -1,4 +1,5 @@
 use serenity::model::Mentionable;
+use serenity::model::RoleId;
 use get_config;
 
 command!(ban(_ctx, msg, args) {
@@ -31,19 +32,16 @@ command!(ban(_ctx, msg, args) {
 
     let author = msg.author.id;
 
-    let member = guild.member(id);
+    let member = guild.member(id).unwrap();
     
-    match member {
-        Ok(m) => m,
-        Err(e) => {
-            error!("Error getting member from guild, {}", e);
-        },
-    }
-
-    if !member.roles.contains(&config.admin_id) && !member.roles.contains(&config.mod_id) {
+    //Convert to serenity types.
+    let admin_id = RoleId(config.admin_id);
+    let mod_id = RoleId(config.mod_id);
+    
+    if !member.roles.contains(&admin_id) && !member.roles.contains(&mod_id) {
         //Member not authorized to ban people.
-        let msg = format!("{}, you can't do that.", author.mention());
-        msg.channel_id.say(&msg).unwrap();
+        let help_msg = format!("{}, you can't do that.", author.mention());
+        msg.channel_id.say(&help_msg).unwrap();
     }
 
     //Delete messages in the past day. The BanOptions is a tuple implementation for (u8, str).
