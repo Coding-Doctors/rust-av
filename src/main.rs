@@ -77,7 +77,10 @@ fn main() {
         .group("Moderation", |g| g
             .command("ban", |c| c
                 .exec(commands::ban)
-                .desc("Bans a user")))
+                .desc("Bans a user from a guild."))
+            .command("kick", |c| c
+                .exec(commands::kick)
+                .desc("Kicks a user from a guild.")))
         );
 
     if let Err(e) = client.start() {
