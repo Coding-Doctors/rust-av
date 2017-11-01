@@ -33,7 +33,7 @@ use handlers::Handler;
 pub struct Config {
     token: String,
     mod_id: u64,
-    admin_id: u64
+    admin_id: u64,
     log_channel: u64,
 }
 
