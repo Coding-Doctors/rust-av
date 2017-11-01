@@ -1,3 +1,5 @@
+use serenity::model::Mentionable;
+
 command!(ban(_ctx, msg, args) {
     let guild = msg.guild();
 
@@ -41,8 +43,7 @@ command!(kick(_ctx, msg, args) {
     let guild = guild.read().unwrap();
     
     //First mention in the message.
-    let user = msg.mentions[0];
-    let id = user.id;
+    let id = msg.mentions[0].id;
     
     let mut reason: String;
     
@@ -60,9 +61,9 @@ command!(kick(_ctx, msg, args) {
     match guild.kick(id) {
         Ok(()) => {
             if reason.len() == 0 {
-                log_msg = format!("User {} was banned. No reason.", user.mention());
+                log_msg = format!("User {} was banned. No reason.", id.mention());
             } else {
-                log_msg = format!("User {} was kicked for reason {}", user.mention(), reason);
+                log_msg = format!("User {} was kicked for reason {}", id.mention(), reason);
             }
         },
         Err(e) => {
