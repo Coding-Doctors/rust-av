@@ -63,7 +63,7 @@ command!(kick(_ctx, msg, args) {
             if reason.len() == 0 {
                 log_msg = format!("User {} was kicked. No reason.", id.mention());
             } else {
-                log_msg = format!("User {} was kicked for reason {}", id.mention(), reason);
+                log_msg = format!("User {} was kicked for reason: {}", id.mention(), reason);
             }
         },
         Err(e) => {
