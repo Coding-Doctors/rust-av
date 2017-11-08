@@ -1,10 +1,10 @@
+use get_config;
 use serenity::model::Mentionable;
 use serenity::model::RoleId;
-use get_config;
 
 command!(ban(_ctx, msg, args) {
     let config = get_config();
-    
+
     let guild = msg.guild();
 
     if let None = guild {
@@ -13,12 +13,12 @@ command!(ban(_ctx, msg, args) {
 
     let guild = guild.unwrap();
     let guild = guild.read().unwrap();
-    
+
     //First mention in the message.
     let id = msg.mentions[0].id;
-    
+
     let mut reason: String;
-    
+
     //If there were arguments provided and we can split them up.
     if let Some((_, remainder)) = args.split_first() {
         let joined = remainder.join(" ");
@@ -33,11 +33,11 @@ command!(ban(_ctx, msg, args) {
     let author = msg.author.id;
 
     let member = guild.member(id).unwrap();
-    
+
     //Convert to serenity types.
     let admin_id = RoleId(config.admin_id);
     let mod_id = RoleId(config.mod_id);
-    
+
     if !member.roles.contains(&admin_id) && !member.roles.contains(&mod_id) {
         //Member not authorized to ban people.
         let help_msg = format!("{}, you can't do that.", author.mention());
@@ -59,12 +59,12 @@ command!(kick(_ctx, msg, args) {
 
     let guild = guild.unwrap();
     let guild = guild.read().unwrap();
-    
+
     //First mention in the message.
     let id = msg.mentions[0].id;
-    
+
     let mut reason: String;
-    
+
     //If there were arguments provided and we can split them up.
     if let Some((_, remainder)) = args.split_first() {
         let joined = remainder.join(" ");
@@ -73,7 +73,7 @@ command!(kick(_ctx, msg, args) {
         msg.channel_id.say("You must provide at least one argument to this command for it to work.\nThe first argument must be a mention of the user you want to kick.");
         reason = String::new();
     }
-    
+
     let mut log_msg: String;
 
     match guild.kick(id) {
