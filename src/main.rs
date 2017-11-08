@@ -12,7 +12,7 @@ extern crate log;
 extern crate derive_error;
 
 mod handlers;
-mod error;
+// mod error;
 mod commands;
 
 use std::fs::File;
