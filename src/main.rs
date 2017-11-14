@@ -34,10 +34,7 @@ pub struct Config {
 
 pub fn get_config() -> Config {
     let home_dir = env::home_dir().unwrap();
-    let path = home_dir
-        .join(".config")
-        .join("sudobot")
-        .join("config.toml");
+    let path = home_dir.join(".config").join("sudobot").join("config.toml");
 
     let mut f = File::open(path).unwrap();
     let mut buf = String::new();
@@ -51,8 +48,10 @@ fn main() {
     match env_logger::init() {
         Ok(_) => {}
         Err(e) => {
-            println!("Failed to initialize env_logger. Reason: {}",
-                     e.cause().unwrap());
+            println!(
+                "Failed to initialize env_logger. Reason: {}",
+                e.cause().unwrap()
+            );
         }
     }
 
@@ -64,18 +63,21 @@ fn main() {
 
     let mut client = Client::new(&token, handler);
 
-    client.with_framework(StandardFramework::new()
-                              .configure(|c| c.prefix("sudo").on_mention(true))
-                              .before(|_ctx, msg, command_name| {
-                                          info!("Got command {} by user {}", command_name, msg.author.name);
-                                          true
-                                      })
-                              .group("Moderation", |g| {
-        g.command("ban",
-                     |c| c.exec(commands::ban).desc("Bans a user from a guild."))
-            .command("kick",
-                     |c| c.exec(commands::kick).desc("Kicks a user from a guild."))
-    }));
+    client.with_framework(
+        StandardFramework::new()
+            .configure(|c| c.prefix("sudo").on_mention(true))
+            .before(|_ctx, msg, command_name| {
+                info!("Got command {} by user {}", command_name, msg.author.name);
+                true
+            })
+            .group("Moderation", |g| {
+                g.command("ban", {
+                    |c| c.exec(commands::ban).desc("Bans a user from a guild.")
+                }).command("kick", {
+                        |c| c.exec(commands::kick).desc("Kicks a user from a guild.")
+                    })
+            }),
+    );
 
     if let Err(e) = client.start() {
         error!("Client error: {:?}", e);
