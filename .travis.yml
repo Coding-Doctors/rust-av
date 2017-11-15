@@ -34,7 +34,8 @@ matrix:
         - cargo install -f rustfmt
         - export PATH=$PATH:~/.cargo/bin
     - env: CLIPPY=true
-      script: cargo clippy
+      # Treats warnings like failures allowing a non 0 exit code failing the travis build
+      script: cargo clippy -- -D warnings
       before_script:
         - cargo install -f clippy
         - export PATH=$PATH:~/.cargo/bin
