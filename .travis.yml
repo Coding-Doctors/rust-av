@@ -35,7 +35,7 @@ matrix:
         - export PATH=$PATH:~/.cargo/bin
     - env: CLIPPY=true
       # Treats warnings like failures allowing a non 0 exit code failing the travis build
-      script: cargo clippy -- -D warnings
+      script: cargo clippy --features "strict" -- -Z no-trans
       before_script:
         - cargo install -f clippy
         - export PATH=$PATH:~/.cargo/bin

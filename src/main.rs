@@ -1,3 +1,4 @@
+#![cfg_attr(feature = "strict", deny(clippy))]
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -74,9 +75,9 @@ fn main() {
                 g.command("ban", {
                     |c| c.exec(commands::ban).desc("Bans a user from a guild.")
                 }).command("kick", {
-                        |c| c.exec(commands::kick).desc("Kicks a user from a guild.")
-                    })
-            }),
+                    |c| c.exec(commands::kick).desc("Kicks a user from a guild.")
+                })
+            })
     );
 
     if let Err(e) = client.start() {
