@@ -1,4 +1,3 @@
-
 use Config;
 use serenity::client::CACHE;
 use serenity::model::*;
@@ -9,9 +8,9 @@ pub fn ban_handler(guild_id: GuildId, user: User, cfg: &Config) -> Result<String
     // This is safe because we are the only ones who hold the lock.
     let cache = CACHE.read().unwrap();
 
-    let guild = cache
-        .guild(guild_id)
-        .ok_or_else(|| format!("No guild found for guild id {}", guild_id));
+    let guild = cache.guild(guild_id).ok_or_else(|| {
+        format!("No guild found for guild id {}", guild_id)
+    });
     let guild = guild.unwrap();
     let guild = guild.read().unwrap();
 
@@ -26,9 +25,11 @@ pub fn ban_handler(guild_id: GuildId, user: User, cfg: &Config) -> Result<String
             if reason.is_none() {
                 log_msg = format!("User {} was banned.", user.mention());
             } else {
-                log_msg = format!("User {} was banned for reason: {}",
-                                  user.mention(),
-                                  reason.clone().unwrap());
+                log_msg = format!(
+                    "User {} was banned for reason: {}",
+                    user.mention(),
+                    reason.clone().unwrap()
+                );
             }
             Ok(log_msg)
         }

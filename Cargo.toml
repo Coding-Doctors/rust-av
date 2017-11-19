@@ -13,3 +13,6 @@ serde_json = "*"
 serenity = "*"
 spin = "*"
 toml = "*"
+[features]
+# Treat warnings as a build error.
+strict = []
