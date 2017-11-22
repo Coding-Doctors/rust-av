@@ -1,0 +1,49 @@
+# Mostly for code coverage
+before_install:
+  - sudo apt-get update
+  - rustup self update
+addons:
+  apt:
+    packages:
+      - libssl-dev
+dist: trusty
+
+language: rust
+cache: 
+  - cargo
+  - apt
+os:
+  - linux
+# Run rustfmt checks as a seperate build
+matrix:
+  # if all that's left to complete is allow_failures, pass/fail the build without waiting on them
+  fast_finish: true
+  include:
+    - env: BUILD=true
+      script: cargo build
+    - env: TEST=true
+      script: cargo test
+      after_success:
+        - bash <(curl https://raw.githubusercontent.com/xd009642/tarpaulin/master/travis-install.sh)
+        - cargo tarpaulin --out Xml
+        - bash <(curl -s https://codecov.io/bash)
+    - env: FMT=true
+      script: cargo fmt -- --write-mode=diff
+      before_script:
+        # Force to ensure latest version in case its already installed (cargo cache is enabled)
+        - cargo install -f rustfmt
+        - export PATH=$PATH:~/.cargo/bin
+    - env: CLIPPY=true
+      # Treats warnings like failures allowing a non 0 exit code failing the travis build
+      script: cargo clippy --features "strict" -- -Z no-trans
+      before_script:
+        - cargo install -f clippy
+        - export PATH=$PATH:~/.cargo/bin
+    - rust: nightly
+      script: cargo build
+  allow_failures:
+    - env: CLIPPY=true
+    - rust: nightly                                                                                                         
+# Run builds for all the supported trains
+# # Acts like a "known" working build, for when nightly is broken/a depenedency is broken because of a nightly breakage
+rust: nightly-2017-11-12
