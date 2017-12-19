@@ -18,6 +18,7 @@ mod commands;
 
 use handlers::Handler;
 use serenity::framework::StandardFramework;
+use serenity::framework::standard::help_commands;
 use serenity::model::*;
 use serenity::prelude::*;
 use std::env;
@@ -78,6 +79,10 @@ fn main() {
                     |c| c.exec(commands::kick).desc("Kicks a user from a guild.")
                 })
             })
+            .group("Help", |g| g
+                .command("help", |c| c
+                        .exec_help(help_commands::plain)
+                        .desc("Displays a list of commands.")))
     );
 
     if let Err(e) = client.start() {
