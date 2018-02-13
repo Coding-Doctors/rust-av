@@ -23,7 +23,9 @@ matrix:
     - env: BUILD=true
       script: cargo build
     - env: TEST=true
-      script: cargo test
+      script: 
+      - cargo test
+      - echo $TE
       after_success:
         - bash <(curl https://raw.githubusercontent.com/xd009642/tarpaulin/master/travis-install.sh)
         - cargo tarpaulin --out Xml
